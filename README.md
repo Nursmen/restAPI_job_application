@@ -18,6 +18,8 @@ GET /items/search?
                 type_name=?
                 min_price=?
                 max_price=? - search by query, type, price
+                page=?
+                limit=? - also pagination
 
 POST /users/register - creates a user (name, password)
 

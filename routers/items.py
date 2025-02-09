@@ -41,11 +41,15 @@ def delete_item(item_id: int, db=Depends(get_db)):
     return {"message": "Item deleted"}
 
 @router.get("/items/search", response_model=list[ItemResponse])
-def search_items(query: str = "", type_name: str = "", min_price: int = 0, max_price: int = 1_000_000, db=Depends(get_db)):
+def search_items(query: str = "", type_name: str = "", min_price: int = 0, max_price: int = 1_000_000, page:int = 1, limit:int = 50, db=Depends(get_db)):
+    
+    offset = (page-1)*limit
+    
     cursor = db.cursor()
     cursor.execute("""
         SELECT Item.* FROM Item
         JOIN Type ON Item.type_id = Type.id
         WHERE Item.name LIKE ? AND Type.name LIKE ? AND priceUSD BETWEEN ? AND ?
-    """, (f"%{query}%", f"%{type_name}%", min_price, max_price))
+        LIMIT ? OFFSET ?
+    """, (f"%{query}%", f"%{type_name}%", min_price, max_price, limit, offset))
     return [dict(row) for row in cursor.fetchall()]
