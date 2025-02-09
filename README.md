@@ -31,6 +31,25 @@ POST /users/like - another way. just send JSON with ids
 
 GET /users/<user_id/liked-items> - shows all of the liked items
 
+
+
+
+
+
+
+
+
+
+To create something (for debug purpuse)
+{
+    "user_id":1,
+    "type_id":1,
+    "city_id":1,
+    "name":"Big ass house",
+    "priceUSD":10,
+    "description":"Lorem ipsum dolor sit amet",
+    "phone":"+996554546293"
+}
 ```
 
 

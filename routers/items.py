@@ -7,8 +7,8 @@ router = APIRouter()
 @router.post("/items/create", response_model=ItemResponse)
 def create_item(item_data: ItemCreate, db=Depends(get_db)):
     cursor = db.cursor()
-    cursor.execute("INSERT INTO Item (name, priceUSD, type_id) VALUES (?, ?, ?)", 
-                   (item_data.name, item_data.priceUSD, item_data.type_id))
+    cursor.execute("INSERT INTO Item (user_id, name, priceUSD, type_id, description, phone, city_id) VALUES (?, ?, ?, ?, ?, ?, ?)", 
+                   (item_data.user_id, item_data.name, item_data.priceUSD, item_data.type_id, item_data.description, item_data.phone, item_data.city_id))
     db.commit()
     return {"id": cursor.lastrowid, **item_data.dict()}
 

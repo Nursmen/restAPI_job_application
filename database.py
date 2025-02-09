@@ -8,21 +8,31 @@ def get_db():
 def init_db():
     conn = get_db()
     cursor = conn.cursor()
+
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS Type (
             id INTEGER PRIMARY KEY,
             name TEXT UNIQUE
         )
     """)
+
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS Item (
+        CREATE TABLE IF NOT EXISTS City (
             id INTEGER PRIMARY KEY,
-            name TEXT,
-            priceUSD INTEGER,
-            type_id INTEGER,
-            FOREIGN KEY (type_id) REFERENCES Type(id)
+            name TEXT UNIQUE
         )
     """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS Images (
+            id INTEGER PRIMARY KEY,
+            filename TEXT UNIQUE,
+            filepath TEXT,
+            item_id INTEGER,
+            FOREIGN KEY (item_id) REFERENCES Item(id)
+        )
+    """)
+
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS User (
             id INTEGER PRIMARY KEY,
@@ -30,6 +40,23 @@ def init_db():
             password TEXT
         )
     """)
+    
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS Item (
+            id INTEGER PRIMARY KEY,
+            user_id INTEGER,
+            name TEXT,
+            priceUSD INTEGER,
+            type_id INTEGER,
+            description TEXT,
+            phone TEXT,
+            city_id INTEGER,
+            FOREIGN KEY (type_id) REFERENCES Type(id),
+            FOREIGN KEY (city_id) REFERENCES City(id),
+            FOREIGN KEY (user_id) REFERENCES User(id)
+        )
+    """)
+
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS UserLikedItems (
         user_id INTEGER,

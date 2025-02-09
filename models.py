@@ -13,6 +13,10 @@ class ItemBase(BaseModel):
     name: str
     priceUSD: int
     type_id: int
+    user_id: int
+    city_id: int
+    description: str
+    phone: str
 
 class ItemCreate(ItemBase):
     pass
