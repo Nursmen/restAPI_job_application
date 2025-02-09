@@ -31,7 +31,11 @@ POST /users/like - another way. just send JSON with ids
 
 GET /users/<user_id/liked-items> - shows all of the liked items
 
+POST /cities/ - create city (name required)
+GET  /cities/ - understandable
 
+POST /upload/ - upload an image
+GET  /image/<image_id> - get an image
 
 
 
