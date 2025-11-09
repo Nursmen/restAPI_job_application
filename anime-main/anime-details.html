@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Anime Template">
+    <meta name="keywords" content="Anime, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Nursofo</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="css/plyr.css" type="text/css">
+    <link rel="stylesheet" href="css/nice-select.css" type="text/css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css">
+</head>
+
+<body>
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Header Section Begin -->
+    <header class="header">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-2">
+                    <div class="header__logo">
+                        <a href="./index.html">
+                            <img src="img/logo.png" alt="">
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="header__nav">
+                        <nav class="header__menu mobile-menu">
+                            <ul>
+                                <li class="active"><a href="./index.html">Homepage</a></li>
+                                <li><a href="./categories.html">Categories <span class="arrow_carrot-down"></span></a>
+                                    <ul class="dropdown">
+                                        <li><a href="./categories.html">Categories</a></li>
+                                        <li><a href="./anime-details.html">Anime Details</a></li>
+                                        <li><a href="./anime-watching.html">Anime Watching</a></li>
+                                        <li><a href="./blog-details.html">Blog Details</a></li>
+                                        <li><a href="./signup.html">Sign Up</a></li>
+                                        <li><a href="./login.html">Login</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="./blog.html">Our Blog</a></li>
+                                <li><a href="#">Contacts</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="header__right">
+                        <a href="#" class="search-switch"><span class="icon_search"></span></a>
+                        <a href="./login.html"><span class="icon_profile"></span></a>
+                    </div>
+                </div>
+            </div>
+            <div id="mobile-menu-wrap"></div>
+        </div>
+    </header>
+    <!-- Header End -->
+
+    <!-- Breadcrumb Begin -->
+    <div class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__links">
+                        <a href="./index.html"><i class="fa fa-home"></i> Home</a>
+                        <a href="./categories.html">Categories</a>
+                        <span>Romance</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcrumb End -->
+
+    <!-- Anime Section Begin -->
+    <section class="anime-details spad">
+<div class="container">
+    <div class="anime__details__content">
+        <div class="row">
+            <!-- Image -->
+            <div class="col-lg-3">
+                <div id="itemImage" class="anime__details__pic set-bg">
+                    <div class="comment"><i class="fa fa-comments"></i> <span id="commentCount">0</span></div>
+                    <div class="view"><i class="fa fa-heart"></i> <span id="likeCount">0</span></div>
+                </div>
+            </div>
+
+            <!-- Details -->
+            <div class="col-lg-9">
+                <div class="anime__details__text">
+                    <div class="anime__details__title">
+                        <h3 id="itemName">Loading…</h3>
+                        <span id="itemType"></span>
+                    </div>
+                    <p id="itemDesc"></p>
+
+                    <div class="anime__details__widget">
+                        <ul>
+                            <li><span>Price:</span> $<span id="itemPrice">-</span></li>
+                            <li><span>City:</span> <span id="itemCity">-</span></li>
+                            <li><span>Phone:</span> <span id="itemPhone">-</span></li>
+                        </ul>
+                    </div>
+
+                    <!-- Creator + Like Buttons -->
+                    <div class="anime__details__btn mt-3">
+                        <a href="#" id="creatorLink" class="follow-btn">
+                            <i class="fa fa-user"></i> Posted by <span id="creatorName">…</span>
+                        </a>
+
+                        <a href="#" id="likeButton" class="like-btn ms-3">
+                            <span id="likeText">Like</span>
+                            <i class="fa fa-heart" id="likeIcon"></i>
+                        </a>
+                    </div>
+
+                    <div class="anime__details__btn mt-2">
+                        <a href="index.html" class="watch-btn"><span>Back to All Items</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const API_BASE = 'http://127.0.0.1:8000';
+    const urlParams = new URLSearchParams(window.location.search);
+    const ITEM_ID = urlParams.get('item_id');
+    const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+    let itemData = null;
+
+    // Default image
+    const NO_IMAGE = 'https://ndpp.co.in/wp-content/uploads/2018/01/sorry-image-not-available-300x300.jpg';
+
+    // Load item with one request
+    async function loadItem() {
+        if (!ITEM_ID) return showError("No item_id in URL");
+
+        try {
+            const res = await fetch(`${API_BASE}/items/${ITEM_ID}`);
+            if (!res.ok) throw new Error("Item not found");
+            itemData = await res.json();
+
+            populateUI();
+            setupLikeButton();
+        } catch (e) {
+            showError(e.message);
+        }
+    }
+
+    function populateUI() {
+        document.getElementById('itemName').textContent   = itemData.title || 'Untitled';
+        document.getElementById('itemType').textContent   = itemData.type_name || '';
+        document.getElementById('itemDesc').textContent   = itemData.description || 'No description.';
+        document.getElementById('itemPrice').textContent  = itemData.price || '0';
+        document.getElementById('itemCity').textContent   = itemData.city_name || '—';
+        document.getElementById('itemPhone').textContent  = itemData.phone || '—';
+        document.getElementById('commentCount').textContent = itemData.comment_count || 0;
+        document.getElementById('likeCount').textContent = itemData.like_count || 0;
+
+        // Image: Use image_id → /image/{id}
+        const imgEl = document.getElementById('itemImage');
+        const imageUrl = itemData.image_id
+            ? `${API_BASE}/image/${itemData.image_id}`
+            : NO_IMAGE;
+
+        imgEl.style.backgroundImage = `url(${imageUrl})`;
+
+        // Creator button
+        const creatorName = itemData.creator_name ? `@${itemData.creator_name}` : '@unknown';
+        document.getElementById('creatorName').textContent = creatorName;
+        document.getElementById('creatorLink').href = `index copy.html?user_id=${itemData.user_id}`;
+    }
+
+    // Like button
+    function setupLikeButton() {
+        const btn = document.getElementById('likeButton');
+        const txt = document.getElementById('likeText');
+        const ico = document.getElementById('likeIcon');
+
+        if (!currentUser.id) {
+            txt.textContent = 'Login to Like';
+            btn.style.opacity = '0.6';
+            return;
+        }
+
+        checkLikedState();
+
+        btn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            if (!currentUser.id) return alert('Login required');
+
+            try {
+                const res = await fetch(`${API_BASE}/users/${currentUser.id}/like/${itemData.item_id}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                if (res.ok) {
+                    // Refresh item data to get updated like count
+                    const itemRes = await fetch(`${API_BASE}/items/${ITEM_ID}`);
+                    if (itemRes.ok) {
+                        itemData = await itemRes.json();
+                        document.getElementById('likeCount').textContent = itemData.like_count || 0;
+                    }
+                    checkLikedState();
+                }
+                else alert('Failed to like');
+            } catch (err) {
+                console.error(err);
+                alert('Network error');
+            }
+        });
+    }
+
+    async function checkLikedState() {
+        const txt = document.getElementById('likeText');
+        const btn = document.getElementById('likeButton');
+        const ico = document.getElementById('likeIcon');
+
+        try {
+            const res = await fetch(`${API_BASE}/users/${currentUser.id}/liked-items`);
+            const liked = await res.json();
+            const isLiked = liked.some(i => i.id === itemData.item_id);
+
+            if (isLiked) {
+                txt.textContent = 'Liked';
+                btn.classList.add('liked');
+                ico.classList.add('text-info');
+            } else {
+                txt.textContent = 'Like';
+                btn.classList.remove('liked');
+                ico.classList.remove('text-info');
+            }
+        } catch (e) {
+            txt.textContent = 'Like';
+            btn.classList.remove('liked');
+        }
+    }
+
+    function showError(msg) {
+        document.getElementById('itemName').textContent = 'Error';
+        document.querySelector('.anime__details__text p').textContent = msg;
+    }
+
+    document.addEventListener('DOMContentLoaded', loadItem);
+</script>
+
+<style>
+    .text-info { color: #070720 !important; }
+    button {
+        background: #6c5ce7; color: white; padding: 8px 14px; border-radius: 4px; text-decoration: none; font-size: 14px;
+    }
+    button:hover { background: #5a4fcf; }
+
+    .like-btn {
+        background: #e74c3c; color: white; padding: 8px 14px; border-radius: 4px; text-decoration: none; font-size: 14px;
+    }
+    .like-btn.liked { background: #e74c3c; }
+    .like-btn .fa-heart { margin-left: 4px; }
+</style>
+
+        <!-- Comments Section -->
+        <div class="row mt-5">
+            <div class="col-lg-8 col-md-8">
+                <div class="anime__details__review">
+                    <div class="section-title"><h5>Comments</h5></div>
+                    <div id="commentsList"></div>
+                </div>
+                <div class="anime__details__form">
+                    <div class="section-title"><h5>Add Comment</h5></div>
+                    <form id="commentForm">
+                        <textarea name="text" placeholder="Your Comment" required style='color: #070720;'></textarea>
+                        <button type="submit"><i class="fa fa-location-arrow"></i> Submit</button>
+                    </form>
+                    <p id="commentMsg" style="margin-top:10px;color:limegreen;font-weight:bold;"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+const apiBase = "http://127.0.0.1:8000";
+const params = new URLSearchParams(window.location.search);
+const itemId = params.get("item_id");
+let user = JSON.parse(localStorage.getItem("user") || "{}");
+
+console.log(user);
+
+async function loadItem() {
+    user = JSON.parse(localStorage.getItem("user") || "{}");
+    
+    create = document.getElementsByClassName("anime__details__form")[0];
+    if (user.id === undefined || user.id === null) {
+        create.style.display = "none";
+    } else {
+        create.style.display = "block";
+    }
+    const res = await fetch(`${apiBase}/items_with_images`);
+    const allItems = await res.json();
+    const item = allItems.find(i => i.item_id == itemId);
+    if (!item) {
+        document.querySelector(".anime__details__content").innerHTML = "<p>Item not found.</p>";
+        return;
+    }
+
+    document.getElementById("itemName").textContent = item.name;
+    document.getElementById("itemDesc").textContent = item.description || "No description.";
+    document.getElementById("itemPrice").textContent = item.priceUSD;
+    document.getElementById("itemPhone").textContent = item.phone;
+    document.getElementById("itemCity").textContent = item.city_name;
+    document.getElementById("itemType").textContent = item.type_name;
+
+    const imageDiv = document.getElementById("itemImage");
+    const imgUrl = item.image_id ? `${apiBase}/image/${item.image_id}` : "img/default.jpg";
+    imageDiv.style.backgroundImage = `url('${imgUrl}')`;
+
+    loadComments();
+}
+
+async function loadComments() {
+    const res = await fetch(`${apiBase}/comments/${itemId}`);
+    const comments = await res.json();
+    document.getElementById("commentCount").textContent = comments.length;
+
+    const container = document.getElementById("commentsList");
+    if (comments.length === 0) {
+        container.innerHTML = "<p style='color:#e53637'><b>No comments yet.</b></p>";
+        return;
+    }
+
+    for (let c of comments) {
+        console.log(`${apiBase}/users/${c.user_id}`);
+        const userRes = await fetch(`${apiBase}/users/${c.user_id}`);
+        c.userData = await userRes.json();
+
+        console.log(c.userData);
+    }
+
+    container.innerHTML = comments.map(c => `
+        <div class="anime__review__item">
+            <div class="anime__review__item__text">
+                <h6>User ${c.userData.name} <span>just now</span></h6>
+                <p>${c.text}</p>
+            </div>
+        </div>
+    `).join("");
+
+
+}
+
+document.getElementById("commentForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const text = e.target.text.value.trim();
+    user = JSON.parse(localStorage.getItem("user") || "{}");
+    console.log("<E", user.id);
+    
+    if (user.id === undefined || user.id === null) {
+        document.getElementById("commentMsg").textContent = "You must be logged in to comment.";
+        return;
+    }
+    const res = await fetch(`${apiBase}/comments`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({user_id: user.id, item_id: +itemId, text})
+    });
+    if (res.ok) {
+        document.getElementById("commentMsg").textContent = "Comment added!";
+        e.target.reset();
+        loadComments();
+    } else {
+        document.getElementById("commentMsg").textContent = "Failed to add comment.";
+    }
+});
+
+loadItem();
+</script>
+
+        <!-- Footer Section Begin -->
+        <footer class="footer">
+            <div class="page-up">
+                <a href="#" id="scrollToTopButton"><span class="arrow_carrot-up"></span></a>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="footer__logo">
+                            <a href="./index.html"><img src="img/logo.png" alt=""></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="footer__nav">
+                            <ul>
+                                <li class="active"><a href="./index.html">Homepage</a></li>
+                                <li><a href="./categories.html">Categories</a></li>
+                                <li><a href="./blog.html">Our Blog</a></li>
+                                <li><a href="#">Contacts</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                          Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                          <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
+
+                      </div>
+                  </div>
+              </div>
+          </footer>
+          <!-- Footer Section End -->
+
+          <!-- Search model Begin -->
+          <div class="search-model">
+            <div class="h-100 d-flex align-items-center justify-content-center">
+                <div class="search-close-switch"><i class="icon_close"></i></div>
+                <form class="search-model-form">
+                    <input type="text" id="search-input" placeholder="Search here.....">
+                </form>
+            </div>
+        </div>
+        <!-- Search model end -->
+
+        <!-- Js Plugins -->
+        <script src="js/jquery-3.3.1.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/player.js"></script>
+        <script src="js/jquery.nice-select.min.js"></script>
+        <script src="js/mixitup.min.js"></script>
+        <script src="js/jquery.slicknav.js"></script>
+        <script src="js/owl.carousel.min.js"></script>
+        <script>
+
+            /*  ---------------------------------------------------
+    Theme Name: Anime
+    Description: Anime video tamplate
+    Author: Colorib
+    Author URI: https://colorib.com/
+    Version: 1.0
+    Created: Colorib
+---------------------------------------------------------  */
+
+'use strict';
+
+(function ($) {
+
+    /*------------------
+        Preloader
+    --------------------*/
+    $(window).on('load', function () {
+        $(".loader").fadeOut();
+        $("#preloder").delay(200).fadeOut("slow");
+
+        /*------------------
+            FIlter
+        --------------------*/
+        $('.filter__controls li').on('click', function () {
+            $('.filter__controls li').removeClass('active');
+            $(this).addClass('active');
+        });
+        if ($('.filter__gallery').length > 0) {
+            var containerEl = document.querySelector('.filter__gallery');
+            var mixer = mixitup(containerEl);
+        }
+    });
+
+    /*------------------
+        Background Set
+    --------------------*/
+    $('.set-bg').each(function () {
+        var bg = $(this).data('setbg');
+        $(this).css('background-image', 'url(' + bg + ')');
+    });
+
+    // Search model
+    $('.search-switch').on('click', function () {
+        $('.search-model').fadeIn(400);
+    });
+
+    $('.search-close-switch').on('click', function () {
+        $('.search-model').fadeOut(400, function () {
+            $('#search-input').val('');
+        });
+    });
+
+    /*------------------
+		Navigation
+	--------------------*/
+    $(".mobile-menu").slicknav({
+        prependTo: '#mobile-menu-wrap',
+        allowParentLinks: true
+    });
+
+    /*------------------
+		Hero Slider
+	--------------------*/
+    var hero_s = $(".hero__slider");
+    hero_s.owlCarousel({
+        loop: true,
+        margin: 0,
+        items: 1,
+        dots: true,
+        nav: true,
+        navText: ["<span class='arrow_carrot-left'></span>", "<span class='arrow_carrot-right'></span>"],
+        animateOut: 'fadeOut',
+        animateIn: 'fadeIn',
+        smartSpeed: 1200,
+        autoHeight: false,
+        autoplay: true,
+        mouseDrag: false
+    });
+
+    /*------------------
+        Video Player
+    --------------------*/
+    const player = new Plyr('#player', {
+        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'captions', 'settings', 'fullscreen'],
+        seekTime: 25
+    });
+
+    /*------------------
+        Niceselect
+    --------------------*/
+    $('select').niceSelect();
+
+    /*------------------
+        Scroll To Top
+    --------------------*/
+    $("#scrollToTopButton").click(function() {
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+        return false;
+     });
+
+})(jQuery);
+        </script>
+
+    </body>
+
+    </html>

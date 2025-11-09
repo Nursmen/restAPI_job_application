@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from database import get_db
 from models import ItemCreate, ItemResponse
+from typing import Dict
 
 router = APIRouter()
 
@@ -30,6 +31,65 @@ def update_item(item_id: int, item_data: ItemCreate, db=Depends(get_db)):
         raise HTTPException(status_code=404, detail="Item not found")
     db.commit()
     return {"id": item_id, **item_data.dict()}
+
+@router.get("/items/{item_id}")
+def get_item_detail(item_id: int, db=Depends(get_db)) -> Dict:
+    """
+    Return ONE item with:
+      • All item fields
+      • City name
+      • Type name
+      • Creator name (User.name)
+      • First image URL (filepath + filename)
+    """
+    cursor = db.cursor()
+
+    cursor.execute("""
+        SELECT
+            i.id              AS item_id,
+            i.name            AS title,
+            i.priceUSD        AS price,
+            i.description,
+            i.phone,
+            i.city_id,
+            c.name            AS city_name,
+            t.name            AS type_name,
+            u.id              AS user_id,
+            u.name            AS creator_name,
+            -- First image (if any)
+            img.id            AS image_id,
+            img.filepath,
+            img.filename,
+            -- Like count from UserLikedItems table
+            (SELECT COUNT(*) FROM UserLikedItems WHERE item_id = i.id) AS like_count
+        FROM Item i
+        LEFT JOIN User u      ON i.user_id = u.id
+        LEFT JOIN City c      ON i.city_id = c.id
+        LEFT JOIN Type t      ON i.type_id = t.id
+        LEFT JOIN Images img  ON img.item_id = i.id
+        WHERE i.id = ?
+        ORDER BY img.id ASC
+        LIMIT 1
+    """, (item_id,))
+
+    row = cursor.fetchone()
+    if not row:
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    item = dict(row)
+
+    # Build full image URL (adjust base URL if needed)
+    if item.get("filepath") and item.get("filename"):
+        # Example: /uploads/123/image.jpg
+        item["image_url"] = f"/uploads/{item['filepath']}/{item['filename']}"
+    else:
+        item["image_url"] = None
+
+    # Clean up internal fields
+    for key in ["filename"]:
+        item.pop(key, None)
+
+    return item
     
 @router.delete("/items/delete", response_model=dict)
 def delete_item(item_id: int, db=Depends(get_db)):
