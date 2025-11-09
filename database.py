@@ -1,7 +1,7 @@
 import sqlite3
 
 def get_db():
-    conn = sqlite3.connect("sales.db")
+    conn = sqlite3.connect("sales.db", check_same_thread=False)
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -11,21 +11,21 @@ def init_db():
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS Type (
-            id INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT UNIQUE
         )
     """)
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS City (
-            id INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT UNIQUE
         )
     """)
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS Images (
-            id INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             filename TEXT UNIQUE,
             filepath TEXT,
             item_id INTEGER,
@@ -35,7 +35,7 @@ def init_db():
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS User (
-            id INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT UNIQUE,
             password TEXT
         )
@@ -43,7 +43,7 @@ def init_db():
     
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS Item (
-            id INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER,
             name TEXT,
             priceUSD INTEGER,
@@ -65,6 +65,15 @@ def init_db():
         FOREIGN KEY (user_id) REFERENCES User(id),
         FOREIGN KEY (item_id) REFERENCES Item(id)
         )
+    """)
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS Comment (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        item_id INTEGER,
+        text TEXT
+    )
     """)
     conn.commit()
     conn.close()

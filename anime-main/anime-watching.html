@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Anime Template">
+    <meta name="keywords" content="Anime, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Anime | Template</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="css/plyr.css" type="text/css">
+    <link rel="stylesheet" href="css/nice-select.css" type="text/css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css">
+</head>
+
+<body>
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Header Section Begin -->
+    <header class="header">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-2">
+                    <div class="header__logo">
+                        <a href="./index.html">
+                            <img src="img/logo.png" alt="">
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="header__nav">
+                        <nav class="header__menu mobile-menu">
+                            <ul>
+                                <li class="active"><a href="./index.html">Homepage</a></li>
+                                <li><a href="./categories.html">Categories <span class="arrow_carrot-down"></span></a>
+                                    <ul class="dropdown">
+                                        <li><a href="./categories.html">Categories</a></li>
+                                        <li><a href="./anime-details.html">Anime Details</a></li>
+                                        <li><a href="./anime-watching.html">Anime Watching</a></li>
+                                        <li><a href="./blog-details.html">Blog Details</a></li>
+                                        <li><a href="./signup.html">Sign Up</a></li>
+                                        <li><a href="./login.html">Login</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="./blog.html">Our Blog</a></li>
+                                <li><a href="#">Contacts</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="header__right">
+                        <a href="#" class="search-switch"><span class="icon_search"></span></a>
+                        <a href="./login.html"><span class="icon_profile"></span></a>
+                    </div>
+                </div>
+            </div>
+            <div id="mobile-menu-wrap"></div>
+        </div>
+    </header>
+    <!-- Header End -->
+
+    <!-- Breadcrumb Begin -->
+    <div class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__links">
+                        <a href="./index.html"><i class="fa fa-home"></i> Home</a>
+                        <a href="./categories.html">Categories</a>
+                        <a href="#">Romance</a>
+                        <span>Fate Stay Night: Unlimited Blade</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcrumb End -->
+<section class="anime-details spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="anime__details__episodes">
+                    <div class="section-title">
+                        <h5>Create Item</h5>
+                    </div>
+                    <form id="createItemForm" class="anime__details__form">
+                        <input type="text" name="name" placeholder="Item Name" required>
+                        <input type="number" name="priceUSD" placeholder="Price (USD)" required>
+                        <select name="type_id" id="typeSelect" required></select>
+                        <textarea name="description" placeholder="Description"></textarea>
+                        <input type="text" name="phone" placeholder="Phone" required>
+                        <select name="city_id" id="citySelect" required></select>
+                        <button type="submit"><i class="fa fa-location-arrow"></i> Create</button>
+                    </form>
+                    <p id="message" style="margin-top:10px;color:limegreen;"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div id="uploadModal" style="
+        display:none;
+        position:fixed;
+        top:0; left:0;
+        width:100%; height:100%;
+        background:rgba(0,0,0,0.7);
+        justify-content:center;
+        align-items:center;
+        z-index:10000;">
+        <div style="
+            background:#222;
+            padding:20px;
+            border-radius:10px;
+            text-align:center;
+            color:#fff;
+            width:320px;">
+            <h5>Upload Image</h5>
+            <form id="uploadForm">
+                <input type="file" name="file" accept="image/*" required style="margin:10px 0;">
+                <button type="submit"><i class="fa fa-upload"></i> Upload</button>
+            </form>
+            <button id="closeUpload" style="margin-top:10px;">Close</button>
+            <p id="uploadMsg" style="margin-top:10px;color:limegreen;"></p>
+        </div>
+    </div>
+</section>
+
+<script>
+const apiBase = "http://127.0.0.1:8000";
+let createdItemId = null;
+
+async function loadDropdowns() {
+    const [types, cities] = await Promise.all([
+        fetch(`${apiBase}/types`).then(r => r.json()),
+        fetch(`${apiBase}/cities`).then(r => r.json())
+    ]);
+
+    const typeSelect = document.getElementById("typeSelect");
+    const citySelect = document.getElementById("citySelect");
+
+    typeSelect.innerHTML = types.map(t => `<option value="${t.id}">${t.name}</option>`).join("");
+    citySelect.innerHTML = cities.map(c => `<option value="${c.id}">${c.name}</option>`).join("");
+
+    if (typeof $ !== 'undefined' && $.fn.niceSelect) {
+        $('select').niceSelect('update');
+    }
+}
+
+document.getElementById("createItemForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const form = e.target;
+    const data = Object.fromEntries(new FormData(form).entries());
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    const res = await fetch(`${apiBase}/items/create`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            user_id: user.id,
+            name: data.name,
+            priceUSD: parseInt(data.priceUSD, 10),
+            type_id: +data.type_id,
+            description: data.description,
+            phone: data.phone,
+            city_id: +data.city_id
+        })
+    });
+
+    const result = await res.json();
+    if (res.ok) {
+        createdItemId = result.id;
+        document.getElementById("message").textContent = `Item created (ID: ${createdItemId})`;
+        document.getElementById("uploadModal").style.display = "flex";
+    } else {
+        document.getElementById("message").textContent = `Error: ${result.detail || JSON.stringify(result)}`;
+    }
+});
+
+document.getElementById("uploadForm").addEventListener("submit", async e => {
+    e.preventDefault();
+
+    const fileInput = e.target.querySelector('input[name="file"]');
+    if (!fileInput.files.length) {
+        document.getElementById("uploadMsg").textContent = "Please select a file.";
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", fileInput.files[0]);
+
+    const res = await fetch(`${apiBase}/upload/?item_id=${createdItemId}`, {
+        method: "POST",
+        body: formData
+    });
+
+    let resultText = "";
+    try {
+        const result = await res.json();
+        resultText = res.ok
+            ? `✅ Image uploaded successfully for item ${createdItemId}`
+            : `❌ Error: ${result.detail || JSON.stringify(result)}`;
+
+        setTimeout(() => {
+                window.location.href = "index.html";
+            }, 1000);
+    } catch {
+        resultText = "❌ Unexpected response from server.";
+    }
+
+    document.getElementById("uploadMsg").textContent = resultText;
+});
+
+
+document.getElementById("closeUpload").addEventListener("click", () => {
+    document.getElementById("uploadModal").style.display = "none";
+});
+
+loadDropdowns();
+</script>
+<style>
+    /* --- Global & Theme --- */
+body {
+    font-family: Arial, sans-serif;
+    /* background-color: #121212; Dark background */
+    color: #eee;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* 'spad' class usually means section padding */
+.spad {
+    padding-top: 80px;
+    padding-bottom: 80px;
+}
+
+/* --- Main Form Box --- */
+.anime__details__episodes {
+    background: #1b1b1b; /* Slightly lighter dark for the box */
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.section-title h5 {
+    color: #fff;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #e53637; /* Red accent color */
+    padding-bottom: 10px;
+    display: inline-block; /* Keeps border from stretching */
+}
+
+/* --- Create Item Form --- */
+.anime__details__form {
+    display: grid;
+    grid-template-columns: 1fr; /* Single column on mobile */
+    gap: 18px;
+}
+
+/* Two-column layout for wider screens */
+@media (min-width: 768px) {
+    .anime__details__form {
+        grid-template-columns: 1fr 1fr; /* Two columns */
+    }
+
+    /* Make Name and Description span both columns */
+    .anime__details__form input[name="name"],
+    .anime__details__form textarea[name="description"],
+    .anime__details__form button[type="submit"] {
+        grid-column: 1 / -1;
+    }
+}
+
+/* --- Form Inputs, Selects, Textarea --- */
+.anime__details__form input[type="text"],
+.anime__details__form input[type="number"],
+.anime__details__form select,
+.anime__details__form textarea {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: #252525;
+    border: 1px solid #444;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 16px;
+    box-sizing: border-box; /* Ensures padding doesn't break layout */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.anime__details__form input:focus,
+.anime__details__form select:focus,
+.anime__details__form textarea:focus {
+    outline: none;
+    border-color: #e53637;
+    box-shadow: 0 0 0 3px rgba(229, 54, 55, 0.2);
+}
+
+.anime__details__form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.anime__details__form ::placeholder {
+    color: #888;
+}
+
+/* --- Form Button --- */
+.anime__details__form button[type="submit"] {
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    background-color: #e53637;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.anime__details__form button[type="submit"]:hover {
+    background-color: #c42d2e; /* Darker red on hover */
+}
+
+.anime__details__form button[type="submit"] i {
+    margin-right: 8px;
+}
+
+/* --- Feedback Message --- */
+#message {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    color: #4CAF50 !important; /* Override inline style */
+}
+
+/* --- Upload Modal --- */
+/* Note: This replaces the inline styles from your HTML.
+  You can remove the `style="..."` attribute from the modal's
+  outermost and inner `div` elements in your HTML file.
+*/
+#uploadModal {
+    /* JS controls display: none/flex */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85); /* Darker backdrop */
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+/* The modal content box */
+#uploadModal > div {
+    background: #222;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    color: #fff;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+    /* Add a subtle pop-in animation */
+    animation: modal-pop 0.3s ease-out forwards;
+}
+
+@keyframes modal-pop {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+#uploadModal h5 {
+    font-size: 22px;
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+/* --- Modal Form & Buttons --- */
+#uploadForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Style the file input */
+#uploadForm input[type="file"] {
+    background: #333;
+    border: 1px dashed #555;
+    border-radius: 5px;
+    padding: 15px;
+    color: #bbb;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+#uploadForm input[type="file"]:hover {
+    background-color: #3a3a3a;
+    border-color: #777;
+}
+
+/* Style the native file input button */
+#uploadForm input[type="file"]::file-selector-button {
+    background: #e53637;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+#uploadForm input[type="file"]::file-selector-button:hover {
+    background: #c42d2e;
+}
+
+/* Modal Buttons */
+#uploadModal button {
+    padding: 10px 15px;
+    font-size: 16px;
+    font-weight: 700;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    width: 100%;
+}
+
+#uploadForm button[type="submit"] {
+    background-color: #e53637; /* Accent */
+    color: #fff;
+}
+
+#uploadForm button[type="submit"]:hover {
+    background-color: #c42d2e;
+}
+
+#closeUpload {
+    background-color: #444; /* Secondary */
+    color: #eee;
+    margin-top: 10px;
+}
+
+#closeUpload:hover {
+    background-color: #555;
+}
+
+/* Modal Feedback */
+#uploadMsg {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #4CAF50 !important; /* Override inline style */
+    line-height: 1.5;
+    word-wrap: break-word;
+}
+
+.nice-select {
+    background-color: #eee;
+    border: 1px solid #444;
+    color: #252525;
+}
+
+.nice-select .option:hover,
+.nice-select .option.selected {
+    background-color: #eee;
+    color: #252525;
+}
+
+.nice-select.open {
+    border-color: #e53637;
+}
+</style>
+
+    <!-- Footer Section Begin -->
+    <footer class="footer">
+        <div class="page-up">
+            <a href="#" id="scrollToTopButton"><span class="arrow_carrot-up"></span></a>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="footer__logo">
+                        <a href="./index.html"><img src="img/logo.png" alt=""></a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="footer__nav">
+                        <ul>
+                            <li class="active"><a href="./index.html">Homepage</a></li>
+                            <li><a href="./categories.html">Categories</a></li>
+                            <li><a href="./blog.html">Our Blog</a></li>
+                            <li><a href="#">Contacts</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                      Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                      <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
+
+                  </div>
+              </div>
+          </div>
+      </footer>
+      <!-- Footer Section End -->
+
+      <!-- Search model Begin -->
+      <div class="search-model">
+        <div class="h-100 d-flex align-items-center justify-content-center">
+            <div class="search-close-switch"><i class="icon_close"></i></div>
+            <form class="search-model-form">
+                <input type="text" id="search-input" placeholder="Search here.....">
+            </form>
+        </div>
+    </div>
+    <!-- Search model end -->
+
+    <!-- Js Plugins -->
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/jquery.nice-select.min.js"></script>
+    <script src="js/mixitup.min.js"></script>
+    <script src="js/jquery.slicknav.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/main.js"></script>
+
+</body>
+
+</html>

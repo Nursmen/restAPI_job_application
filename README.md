@@ -31,7 +31,7 @@ POST /users/logout
 POST /users/<user_id>/liked/<item_id> - one way of liking
 POST /users/like - another way. just send JSON with ids
 
-GET /users/<user_id/liked-items> - shows all of the liked items
+GET /users/<user_id>/liked-items - shows all of the liked items
 
 POST /cities/ - create city (name required)
 GET  /cities/ - understandable
@@ -51,11 +51,14 @@ To create something (for debug purpuse)
     "user_id":1,
     "type_id":1,
     "city_id":1,
-    "name":"Big ass house",
+    "name":"Logitech xg 8 / 50",
     "priceUSD":10,
-    "description":"Lorem ipsum dolor sit amet",
+    "description":"Bought for my mother but got her a better one",
     "phone":"+996554546293"
 }
+
+
+
 ```
 
 

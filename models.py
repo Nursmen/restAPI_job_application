@@ -31,3 +31,15 @@ class User(BaseModel):
 class LikeRequest(BaseModel):
     user_id: int
     item_id: int
+
+
+class CommentBase(BaseModel):
+    user_id: int
+    item_id: int
+    text: str
+
+class CommentCreate(CommentBase):
+    pass
+
+class CommentResponse(CommentBase):
+    id: int
